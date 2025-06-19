@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t jpaps/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run jpaps/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t jpaps/multi-client ./client
+  - docker build -t jpaps/multi-nginx ./nginx
+  - docker build -t jpaps/multi-server ./server
+  - docker build -t jpaps/multi-worker ./worker
